@@ -165,8 +165,8 @@ public class SchemaMetadataService : ISchemaMetadataService
 
         await result.ForEachAsync(record =>
         {
-            var entityNode = record["e"].As<INode>();
-            var propertyNodes = record["properties"].As<List<INode>>();
+            var entityNode = record["e"].As<Neo4jINode>();
+            var propertyNodes = record["properties"].As<List<Neo4jINode>>();
             var extendsEntity = record["extendsEntity"].As<string?>();
 
             var entitySchema = new EntitySchema
@@ -213,7 +213,7 @@ public class SchemaMetadataService : ISchemaMetadataService
 
         await result.ForEachAsync(record =>
         {
-            var relNode = record["r"].As<INode>();
+            var relNode = record["r"].As<Neo4jINode>();
 
             var relationshipSchema = new RelationshipSchema
             {

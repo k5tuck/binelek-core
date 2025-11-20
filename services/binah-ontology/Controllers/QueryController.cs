@@ -1,6 +1,7 @@
 using Binah.Infrastructure.MultiTenancy;
 using Microsoft.AspNetCore.Mvc;
 using Neo4j.Driver;
+using Neo4jINode = Neo4j.Driver.INode;
 
 namespace Binah.Ontology.Controllers;
 
@@ -23,7 +24,7 @@ public class QueryController : ControllerBase
     [HttpPost("execute")]
     public async Task<ActionResult<QueryExecutionResult>> Execute([FromBody] QueryExecutionRequest request)
     {
-        var tenantId = TenantContext.GetRequiredTenantId();
+        var tenantId = LicenseeContext.GetRequiredLicenseeId().ToString();
 
         _logger.LogInformation("Executing query for tenant {TenantId}", tenantId);
 
@@ -88,7 +89,7 @@ public class QueryController : ControllerBase
     [HttpGet("entity-types")]
     public async Task<ActionResult<List<string>>> GetEntityTypes()
     {
-        var tenantId = TenantContext.GetRequiredTenantId();
+        var tenantId = LicenseeContext.GetRequiredLicenseeId().ToString();
 
         try
         {
@@ -131,23 +132,23 @@ public class QueryController : ControllerBase
         if (!string.IsNullOrEmpty(request.CypherQuery))
         {
             // Security: Inject tenant filter into MATCH clauses
-            var query = request.CypherQuery;
+            var cypherQuery = request.CypherQuery;
 
             // Simple tenant injection - in production, use a proper Cypher parser
-            if (!query.Contains("tenantId"))
+            if (!cypherQuery.Contains("tenantId"))
             {
-                query = query.Replace("MATCH (", "MATCH (n {tenantId: $tenantId}) WITH n MATCH (");
+                cypherQuery = cypherQuery.Replace("MATCH (", "MATCH (n {tenantId: $tenantId}) WITH n MATCH (");
             }
 
             if (request.Limit.HasValue)
             {
-                if (!query.ToUpper().Contains("LIMIT"))
+                if (!cypherQuery.ToUpper().Contains("LIMIT"))
                 {
-                    query += $" LIMIT {request.Limit}";
+                    cypherQuery += $" LIMIT {request.Limit}";
                 }
             }
 
-            return (query, parameters);
+            return (cypherQuery, parameters);
         }
 
         // Build query from visual conditions
@@ -216,7 +217,7 @@ public class QueryController : ControllerBase
     {
         return value switch
         {
-            INode node => new Dictionary<string, object>
+            Neo4jINode node => new Dictionary<string, object>
             {
                 { "id", node.ElementId },
                 { "labels", node.Labels },

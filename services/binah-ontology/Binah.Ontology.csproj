@@ -26,9 +26,9 @@
     <PackageReference Include="Neo4j.Driver" Version="5.15.0" />
 
     <!-- GraphQL -->
-    <PackageReference Include="HotChocolate.AspNetCore" Version="13.7.0" />
-    <PackageReference Include="HotChocolate.Data.Neo4J" Version="13.7.0" />
-    <PackageReference Include="HotChocolate.Subscriptions.InMemory" Version="13.7.0" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="13.8.1" />
+    <PackageReference Include="HotChocolate.Data.Neo4J" Version="13.8.1" />
+    <PackageReference Include="HotChocolate.Subscriptions.InMemory" Version="13.8.1" />
 
     <!-- Kafka -->
     <PackageReference Include="Confluent.Kafka" Version="2.3.0" />
@@ -52,7 +52,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
 
     <!-- JSON -->
-    <PackageReference Include="System.Text.Json" Version="8.0.1" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
 
     <!-- YAML Parser -->
     <PackageReference Include="YamlDotNet" Version="15.1.0" />

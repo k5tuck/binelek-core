@@ -1,0 +1,14 @@
+{
+  "topics": [
+    {
+      "name": "supplychainontology.order.OrderEvents",
+      "partitions": 6,
+      "replication_factor": 3,
+      "config": {
+        "cleanup_policy": "compact",
+        "retention_ms": 604800000,
+        "max_message_bytes": 1048576
+      }
+    }
+  ]
+}

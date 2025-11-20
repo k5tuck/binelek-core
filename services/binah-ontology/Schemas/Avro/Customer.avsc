@@ -1,0 +1,44 @@
+{
+  "type": "record",
+  "name": "Customer",
+  "namespace": "Acme.SupplyChain.Avro",
+  "doc": "A customer entity",
+  "fields": [
+    {
+      "name": "CustomerId",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      },
+      "doc": "Unique customer identifier",
+      "default": null
+    },
+    {
+      "name": "CompanyName",
+      "type": "string",
+      "doc": "Company name",
+      "default": null
+    },
+    {
+      "name": "Email",
+      "type": "string",
+      "doc": "Primary email address",
+      "default": null
+    },
+    {
+      "name": "Phone",
+      "type": [
+        "null",
+        "string"
+      ],
+      "doc": "Primary phone number",
+      "default": null
+    },
+    {
+      "name": "Address",
+      "type": "string",
+      "doc": "Primary address",
+      "default": null
+    }
+  ]
+}

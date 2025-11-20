@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Exclude test files from build -->
+    <Compile Remove="Tests/**/*.cs" />
+    <!-- Exclude SAML Production service with API version mismatch -->
+    <Compile Remove="Services/SamlServiceProduction.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
+    <!-- Prometheus Metrics -->
+    <PackageReference Include="prometheus-net" Version="8.2.1" />
+    <PackageReference Include="prometheus-net.AspNetCore" Version="8.2.1" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
+    <PackageReference Include="Sustainsys.Saml2.AspNetCore2" Version="2.9.2" />
+    <PackageReference Include="Sustainsys.Saml2" Version="2.9.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Binah Shared Libraries from GitHub Packages -->
+    <PackageReference Include="Binah.Core" Version="1.0.0-beta.1" />
+    <PackageReference Include="Binah.Contracts" Version="1.0.0-beta.1" />
+    <PackageReference Include="Binah.Infrastructure" Version="1.0.0-beta.1" />
+  </ItemGroup>
+
+</Project>

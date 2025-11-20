@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package acme.supplychain;
+
+// A customer entity
+message Customer {
+  // Unique customer identifier
+  string customerId = 1;
+  // Company name
+  string companyName = 2;
+  // Primary email address
+  string email = 3;
+  // Primary phone number
+  string phone = 4;
+  // Primary address
+  string address = 5;
+}

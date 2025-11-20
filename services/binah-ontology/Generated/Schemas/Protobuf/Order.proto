@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package acme.supplychain;
+
+// A customer purchase order
+message Order {
+  // Unique order identifier
+  string orderId = 1;
+  // Human-readable order number
+  string orderNumber = 2;
+  // Reference to customer
+  string customerId = 3;
+  // Total order amount
+  double totalAmount = 4;
+  // Order status
+  string status = 5;
+  // When the order was placed
+  int64 orderDate = 6;
+}

@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package acme.supplychain;
+
+// A product in the catalog
+message Product {
+  string productId = 1;
+  string sKU = 2;
+  string name = 3;
+  string description = 4;
+  double unitPrice = 5;
+  int32 stockQuantity = 6;
+}

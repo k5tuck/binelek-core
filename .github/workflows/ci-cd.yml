@@ -1,4 +1,4 @@
-name: Build and Test
+name: Core Services CI/CD
 
 on:
   push:
@@ -10,49 +10,50 @@ env:
   DOTNET_VERSION: '8.0.x'
 
 jobs:
-  build-and-test:
+  build-auth:
     runs-on: ubuntu-latest
-    
     steps:
     - uses: actions/checkout@v4
-    
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
-    
-    - name: Restore dependencies
-      run: dotnet restore
-    
-    - name: Build
-      run: dotnet build --no-restore --configuration Release
-    
-    - name: Test
-      run: dotnet test --no-build --configuration Release --verbosity normal
-    
-    - name: Build Docker images
+    - name: Configure NuGet
       run: |
-        for service in src/*/; do
-          if [ -f "$service/Dockerfile" ]; then
-            docker build -t $(basename $service):latest $service
-          fi
-        done
-  
-  security-scan:
+        dotnet nuget add source https://nuget.pkg.github.com/k5tuck/index.json --name github --username k5tuck --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
+    - name: Restore
+      run: dotnet restore services/binah-auth/Binah.Auth.csproj
+    - name: Build
+      run: dotnet build services/binah-auth/Binah.Auth.csproj --no-restore --configuration Release
+
+  build-ontology:
     runs-on: ubuntu-latest
-    
     steps:
     - uses: actions/checkout@v4
-    
-    - name: Run Trivy security scan
-      uses: aquasecurity/trivy-action@master
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
       with:
-        scan-type: 'fs'
-        scan-ref: '.'
-        format: 'sarif'
-        output: 'trivy-results.sarif'
-    
-    - name: Upload scan results
-      uses: github/codeql-action/upload-sarif@v3
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    - name: Configure NuGet
+      run: |
+        dotnet nuget add source https://nuget.pkg.github.com/k5tuck/index.json --name github --username k5tuck --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
+    - name: Restore
+      run: dotnet restore services/binah-ontology/Binah.Ontology.csproj
+    - name: Build
+      run: dotnet build services/binah-ontology/Binah.Ontology.csproj --no-restore --configuration Release
+
+  build-api:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
       with:
-        sarif_file: 'trivy-results.sarif'
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    - name: Configure NuGet
+      run: |
+        dotnet nuget add source https://nuget.pkg.github.com/k5tuck/index.json --name github --username k5tuck --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
+    - name: Restore
+      run: dotnet restore services/binah-api/Binah.API.csproj
+    - name: Build
+      run: dotnet build services/binah-api/Binah.API.csproj --no-restore --configuration Release

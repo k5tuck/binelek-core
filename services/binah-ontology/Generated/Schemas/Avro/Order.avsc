@@ -1,0 +1,58 @@
+{
+  "type": "record",
+  "name": "Order",
+  "namespace": "Acme.SupplyChain.Avro",
+  "doc": "A customer purchase order",
+  "fields": [
+    {
+      "name": "OrderId",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      },
+      "doc": "Unique order identifier",
+      "default": null
+    },
+    {
+      "name": "OrderNumber",
+      "type": "string",
+      "doc": "Human-readable order number",
+      "default": null
+    },
+    {
+      "name": "CustomerId",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      },
+      "doc": "Reference to customer",
+      "default": null
+    },
+    {
+      "name": "TotalAmount",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 10,
+        "scale": 2
+      },
+      "doc": "Total order amount",
+      "default": null
+    },
+    {
+      "name": "Status",
+      "type": "string",
+      "doc": "Order status",
+      "default": null
+    },
+    {
+      "name": "OrderDate",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "When the order was placed",
+      "default": null
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "type": "record",
+  "name": "Product",
+  "namespace": "Acme.SupplyChain.Avro",
+  "doc": "A product in the catalog",
+  "fields": [
+    {
+      "name": "ProductId",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      },
+      "doc": null,
+      "default": null
+    },
+    {
+      "name": "SKU",
+      "type": "string",
+      "doc": null,
+      "default": null
+    },
+    {
+      "name": "Name",
+      "type": "string",
+      "doc": null,
+      "default": null
+    },
+    {
+      "name": "Description",
+      "type": [
+        "null",
+        "string"
+      ],
+      "doc": null,
+      "default": null
+    },
+    {
+      "name": "UnitPrice",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 10,
+        "scale": 2
+      },
+      "doc": null,
+      "default": null
+    },
+    {
+      "name": "StockQuantity",
+      "type": "int",
+      "doc": null,
+      "default": null
+    }
+  ]
+}

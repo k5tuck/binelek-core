@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ActionModel = Binah.Ontology.Models.Action.Action;
 
 namespace Binah.Ontology.Repositories;
 
@@ -25,20 +26,20 @@ public class ActionRepository : IActionRepository
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<Action> CreateAsync(Action action)
+    public async Task<ActionModel> CreateAsync(ActionModel action)
     {
         _context.Actions.Add(action);
         await _context.SaveChangesAsync();
         return action;
     }
 
-    public async Task<Action?> GetByIdAsync(string actionId, string tenantId)
+    public async Task<ActionModel?> GetByIdAsync(string actionId, string tenantId)
     {
         return await _context.Actions
             .FirstOrDefaultAsync(a => a.Id == actionId && a.TenantId == tenantId && !a.IsDeleted);
     }
 
-    public async Task<List<Action>> GetByTenantAsync(string tenantId, int skip, int limit, ActionStatus? status = null)
+    public async Task<List<ActionModel>> GetByTenantAsync(string tenantId, int skip, int limit, ActionStatus? status = null)
     {
         var query = _context.Actions
             .Where(a => a.TenantId == tenantId && !a.IsDeleted);
@@ -55,7 +56,7 @@ public class ActionRepository : IActionRepository
             .ToListAsync();
     }
 
-    public async Task<Action> UpdateAsync(Action action)
+    public async Task<ActionModel> UpdateAsync(ActionModel action)
     {
         _context.Actions.Update(action);
         await _context.SaveChangesAsync();

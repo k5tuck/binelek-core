@@ -1,6 +1,7 @@
 using Binah.Ontology.Models.Action;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ActionModel = Binah.Ontology.Models.Action.Action;
 
 namespace Binah.Ontology.Repositories;
 
@@ -12,22 +13,22 @@ public interface IActionRepository
     /// <summary>
     /// Creates a new action
     /// </summary>
-    Task<Action> CreateAsync(Action action);
+    Task<ActionModel> CreateAsync(ActionModel action);
 
     /// <summary>
     /// Retrieves an action by ID
     /// </summary>
-    Task<Action?> GetByIdAsync(string actionId, string tenantId);
+    Task<ActionModel?> GetByIdAsync(string actionId, string tenantId);
 
     /// <summary>
     /// Retrieves actions for a tenant
     /// </summary>
-    Task<List<Action>> GetByTenantAsync(string tenantId, int skip, int limit, ActionStatus? status = null);
+    Task<List<ActionModel>> GetByTenantAsync(string tenantId, int skip, int limit, ActionStatus? status = null);
 
     /// <summary>
     /// Updates an action
     /// </summary>
-    Task<Action> UpdateAsync(Action action);
+    Task<ActionModel> UpdateAsync(ActionModel action);
 
     /// <summary>
     /// Creates an action run

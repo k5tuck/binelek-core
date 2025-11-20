@@ -2,6 +2,7 @@ using Binah.Ontology.Models;
 using Binah.Ontology.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using Neo4j.Driver;
+using Neo4jINode = Neo4j.Driver.INode;
 
 namespace Binah.Ontology.Services.Implementations;
 
@@ -234,7 +235,7 @@ public class SchemaMetadataService : ISchemaMetadataService
         return relationships;
     }
 
-    private List<ValidationRule> LoadValidationRulesFromNode(INode entityNode)
+    private List<ValidationRule> LoadValidationRulesFromNode(Neo4jINode entityNode)
     {
         var rules = new List<ValidationRule>();
 
@@ -264,7 +265,7 @@ public class SchemaMetadataService : ISchemaMetadataService
         return rules;
     }
 
-    private UIConfiguration LoadUIConfigFromNode(INode entityNode)
+    private UIConfiguration LoadUIConfigFromNode(Neo4jINode entityNode)
     {
         var config = new UIConfiguration();
 

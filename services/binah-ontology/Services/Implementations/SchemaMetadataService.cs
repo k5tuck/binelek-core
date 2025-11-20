@@ -127,7 +127,8 @@ public class SchemaMetadataService : ISchemaMetadataService
             LIMIT 1";
 
         var result = await session.RunAsync(query, new { tenantId });
-        var record = await result.SingleOrDefaultAsync();
+        var records = await result.ToListAsync();
+        var record = records.FirstOrDefault();
 
         return record?["version"].As<int>() ?? 1;
     }

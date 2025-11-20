@@ -86,10 +86,10 @@ public class RollbackService : IRollbackService
 
             // Update ontology version status
             currentVersion.IsActive = false;
-            currentVersion.Status = "rolled_back";
+            // currentVersion.Status = "rolled_back"; // TODO: Add Status property to OntologyVersion model
 
             targetOntology.IsActive = true;
-            targetOntology.Status = "active";
+            // targetOntology.Status = "active"; // TODO: Add Status property to OntologyVersion model
 
             await _dbContext.SaveChangesAsync();
 

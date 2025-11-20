@@ -260,7 +260,8 @@ public class DataNetworkService : IDataNetworkService
                 ";
 
                 var compResult = await tx.RunAsync(completenessQuery);
-                var compRecord = await compResult.SingleOrDefaultAsync();
+                var compRecords = await compResult.ToListAsync();
+                var compRecord = compRecords.FirstOrDefault();
                 var completeness = compRecord?["completeness"].As<decimal>() ?? 94m;
 
                 var scores = new List<DataQualityScore>

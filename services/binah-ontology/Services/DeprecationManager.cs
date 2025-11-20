@@ -54,17 +54,18 @@ public class DeprecationManager : IDeprecationManager
             };
 
             // Schedule notifications at key intervals
+            var policyGuid = Guid.TryParse(policy.Id, out var parsedGuid) ? parsedGuid : Guid.NewGuid();
             policy.Notifications = new List<DeprecationNotification>
             {
-                CreateNotification(policy.Id, now.AddMonths(6), "6_months",
+                CreateNotification(policyGuid, now.AddMonths(6), "6_months",
                     $"Breaking change in 6 months: {breakingChange.Description}"),
-                CreateNotification(policy.Id, now.AddMonths(9), "3_months",
+                CreateNotification(policyGuid, now.AddMonths(9), "3_months",
                     $"Breaking change in 3 months: {breakingChange.Description}"),
-                CreateNotification(policy.Id, now.AddMonths(11), "1_month",
+                CreateNotification(policyGuid, now.AddMonths(11), "1_month",
                     $"Breaking change in 1 month: {breakingChange.Description}"),
-                CreateNotification(policy.Id, deprecationDate.AddDays(-7), "7_days",
+                CreateNotification(policyGuid, deprecationDate.AddDays(-7), "7_days",
                     $"URGENT: Breaking change in 7 days: {breakingChange.Description}"),
-                CreateNotification(policy.Id, deprecationDate, "final",
+                CreateNotification(policyGuid, deprecationDate, "final",
                     $"Breaking change is now active: {breakingChange.Description}")
             };
 

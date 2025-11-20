@@ -122,7 +122,7 @@ public class SystemController : ControllerBase
     [HttpGet("environment")]
     public ActionResult<EnvironmentInfo> GetEnvironment()
     {
-        var tenantId = LicenseeContext.GetLicenseeId() ?? "unknown";
+        var tenantId = LicenseeContext.LicenseeId?.ToString() ?? "unknown";
         var assembly = Assembly.GetExecutingAssembly();
         var version = assembly.GetName().Version?.ToString() ?? "1.0.0";
 
@@ -261,7 +261,7 @@ public class SystemController : ControllerBase
     [HttpPost("cache/clear")]
     public ActionResult<ClearCacheResponse> ClearCache([FromBody] ClearCacheRequest? request)
     {
-        var tenantId = LicenseeContext.GetLicenseeId() ?? "unknown";
+        var tenantId = LicenseeContext.LicenseeId?.ToString() ?? "unknown";
         _logger.LogInformation("Cache clear requested by tenant {TenantId}, cache: {CacheName}",
             tenantId, request?.CacheName ?? "all");
 

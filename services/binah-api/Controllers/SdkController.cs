@@ -101,7 +101,7 @@ public class SdkController : ControllerBase
     [HttpGet("downloads")]
     public ActionResult<SdkListResponse> GetAvailableSdks()
     {
-        var tenantId = LicenseeContext.GetLicenseeId() ?? "unknown";
+        var tenantId = LicenseeContext.LicenseeId?.ToString() ?? "unknown";
         _logger.LogInformation("SDK list requested by tenant {TenantId}", tenantId);
 
         return Ok(new SdkListResponse
@@ -117,7 +117,7 @@ public class SdkController : ControllerBase
     [HttpGet("downloads/{id}")]
     public ActionResult<SdkDownloadResponse> GetSdkDownload(string id)
     {
-        var tenantId = LicenseeContext.GetLicenseeId() ?? "unknown";
+        var tenantId = LicenseeContext.LicenseeId?.ToString() ?? "unknown";
         var sdk = AvailableSdks.FirstOrDefault(s => s.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
 
         if (sdk == null)
@@ -147,7 +147,7 @@ public class SdkController : ControllerBase
     [HttpGet("settings")]
     public ActionResult<UserSettings> GetUserSettings()
     {
-        var tenantId = LicenseeContext.GetLicenseeId() ?? "unknown";
+        var tenantId = LicenseeContext.LicenseeId?.ToString() ?? "unknown";
         var userId = User.FindFirst("sub")?.Value ?? "unknown";
 
         _logger.LogInformation("User settings requested by user {UserId} in tenant {TenantId}", userId, tenantId);
@@ -181,7 +181,7 @@ public class SdkController : ControllerBase
     [HttpPut("settings")]
     public ActionResult<UserSettings> UpdateUserSettings([FromBody] UpdateUserSettingsRequest request)
     {
-        var tenantId = LicenseeContext.GetLicenseeId() ?? "unknown";
+        var tenantId = LicenseeContext.LicenseeId?.ToString() ?? "unknown";
         var userId = User.FindFirst("sub")?.Value ?? "unknown";
 
         _logger.LogInformation("User settings updated by user {UserId} in tenant {TenantId}", userId, tenantId);

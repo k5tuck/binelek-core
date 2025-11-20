@@ -23,7 +23,7 @@ jobs:
     
     - name: Build and push
       run: |
-        for service in src/*/; do
+        for service in services/*/; do
           if [ -f "$service/Dockerfile" ]; then
             SERVICE_NAME=$(basename $service)
             docker buildx build --push \

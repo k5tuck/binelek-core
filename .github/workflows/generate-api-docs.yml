@@ -1,0 +1,205 @@
+name: Generate API Documentation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'services/binah-ontology/**'
+      - 'services/binah-auth/**'
+      - 'services/binah-api/**'
+      - '.github/workflows/generate-api-docs.yml'
+  workflow_dispatch:
+    inputs:
+      service:
+        description: 'Service to generate docs for (or "all")'
+        required: false
+        default: 'all'
+
+jobs:
+  generate-binah-ontology-docs:
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.service == 'binah-ontology' || github.event.inputs.service == 'all') ||
+      github.event_name == 'push'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install DocFX
+        run: dotnet tool install -g docfx
+
+      - name: Restore dependencies
+        run: |
+          cd services/binah-ontology
+          dotnet restore
+
+      - name: Build project
+        run: |
+          cd services/binah-ontology
+          dotnet build --configuration Release --no-restore
+
+      - name: Generate Documentation
+        run: |
+          cd services/binah-ontology
+          docfx docfx.json
+
+      - name: Package Documentation
+        run: |
+          cd services/binah-ontology/_site
+          tar -czf ../../binah-ontology-docs.tar.gz .
+          cd ../..
+          ls -lh binah-ontology-docs.tar.gz
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: binah-ontology-docs
+          path: services/binah-ontology/binah-ontology-docs.tar.gz
+          retention-days: 90
+
+      - name: Get short SHA
+        id: sha
+        run: echo "SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: binah-ontology-docs-${{ steps.sha.outputs.SHORT_SHA }}
+          name: "Binah Ontology API Docs - ${{ steps.sha.outputs.SHORT_SHA }}"
+          body: |
+            ## Binah Ontology API Documentation
+
+            Auto-generated API documentation from commit ${{ github.sha }}
+
+            **Service:** binah-ontology
+            **Generated:** ${{ github.event.head_commit.timestamp }}
+            **Commit:** ${{ github.event.head_commit.message }}
+
+            ### Download
+
+            Download the `binah-ontology-docs.tar.gz` artifact and extract it to view the documentation.
+
+            ### Integration
+
+            This artifact can be fetched by the binelek-docs repository to publish on developers.binelek.com
+          files: services/binah-ontology/binah-ontology-docs.tar.gz
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Trigger binelek-docs update
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          repository: k5tuck/binelek-docs
+          event-type: api-docs-updated
+          client-payload: '{"service": "binah-ontology", "version": "${{ github.sha }}", "tag": "binah-ontology-docs-${{ steps.sha.outputs.SHORT_SHA }}"}'
+        continue-on-error: true
+
+  generate-binah-auth-docs:
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.service == 'binah-auth' || github.event.inputs.service == 'all')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install DocFX
+        run: dotnet tool install -g docfx
+
+      - name: Check if docfx.json exists
+        id: check
+        run: |
+          if [ -f "services/binah-auth/docfx.json" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate Documentation
+        if: steps.check.outputs.exists == 'true'
+        run: |
+          cd services/binah-auth
+          dotnet restore
+          dotnet build --configuration Release --no-restore
+          docfx docfx.json
+
+      - name: Package Documentation
+        if: steps.check.outputs.exists == 'true'
+        run: |
+          cd services/binah-auth/_site
+          tar -czf ../../binah-auth-docs.tar.gz .
+
+      - name: Upload Artifact
+        if: steps.check.outputs.exists == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: binah-auth-docs
+          path: services/binah-auth/binah-auth-docs.tar.gz
+          retention-days: 90
+
+  generate-binah-api-docs:
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.service == 'binah-api' || github.event.inputs.service == 'all')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install DocFX
+        run: dotnet tool install -g docfx
+
+      - name: Check if docfx.json exists
+        id: check
+        run: |
+          if [ -f "services/binah-api/docfx.json" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate Documentation
+        if: steps.check.outputs.exists == 'true'
+        run: |
+          cd services/binah-api
+          dotnet restore
+          dotnet build --configuration Release --no-restore
+          docfx docfx.json
+
+      - name: Package Documentation
+        if: steps.check.outputs.exists == 'true'
+        run: |
+          cd services/binah-api/_site
+          tar -czf ../../binah-api-docs.tar.gz .
+
+      - name: Upload Artifact
+        if: steps.check.outputs.exists == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: binah-api-docs
+          path: services/binah-api/binah-api-docs.tar.gz
+          retention-days: 90

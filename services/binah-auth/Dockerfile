@@ -6,19 +6,23 @@ EXPOSE 8093
 ENV ASPNETCORE_URLS=http://+:8093
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG GITHUB_TOKEN
 WORKDIR /src
 
-# Copy library projects
-COPY ["libraries/binah-contracts/Binah.Contracts.csproj", "libraries/binah-contracts/"]
-COPY ["libraries/binah-core/Binah.Core.csproj", "libraries/binah-core/"]
+# Configure GitHub Packages as NuGet source
+RUN if [ -n "$GITHUB_TOKEN" ]; then \
+      dotnet nuget add source https://nuget.pkg.github.com/k5tuck/index.json \
+        --name github \
+        --username k5tuck \
+        --password "$GITHUB_TOKEN" \
+        --store-password-in-clear-text; \
+    fi
 
 # Copy service project
 COPY ["services/binah-auth/Binah.Auth.csproj", "services/binah-auth/"]
 RUN dotnet restore "services/binah-auth/Binah.Auth.csproj"
 
 # Copy source files
-COPY libraries/binah-contracts/ libraries/binah-contracts/
-COPY libraries/binah-core/ libraries/binah-core/
 COPY services/binah-auth/ services/binah-auth/
 
 WORKDIR "/src/services/binah-auth"

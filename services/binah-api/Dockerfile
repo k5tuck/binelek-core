@@ -6,21 +6,23 @@ EXPOSE 8092
 ENV ASPNETCORE_URLS=http://+:8092
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG GITHUB_TOKEN
 WORKDIR /src
 
-# Copy library projects first
-COPY ["libraries/binah-contracts/Binah.Contracts.csproj", "libraries/binah-contracts/"]
-COPY ["libraries/binah-core/Binah.Core.csproj", "libraries/binah-core/"]
-COPY ["libraries/binah-infrastructure/Binah.Infrastructure.csproj", "libraries/binah-infrastructure/"]
+# Configure GitHub Packages as NuGet source
+RUN if [ -n "$GITHUB_TOKEN" ]; then \
+      dotnet nuget add source https://nuget.pkg.github.com/k5tuck/index.json \
+        --name github \
+        --username k5tuck \
+        --password "$GITHUB_TOKEN" \
+        --store-password-in-clear-text; \
+    fi
 
 # Copy service project
 COPY ["services/binah-api/Binah.API.csproj", "services/binah-api/"]
 RUN dotnet restore "services/binah-api/Binah.API.csproj"
 
-# Copy all source files
-COPY libraries/binah-contracts/ libraries/binah-contracts/
-COPY libraries/binah-core/ libraries/binah-core/
-COPY libraries/binah-infrastructure/ libraries/binah-infrastructure/
+# Copy source files
 COPY services/binah-api/ services/binah-api/
 
 WORKDIR "/src/services/binah-api"
